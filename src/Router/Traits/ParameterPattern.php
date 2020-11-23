@@ -23,7 +23,7 @@ trait ParameterPattern
 
     public function setParameterPattern(string $parameter, string $pattern) : self
     {
-        $this->parametersPattern[$parameter] = $pattern;
+        $this->parametersPattern[$parameter] = preg_replace('/\(/', '(?:', $pattern);
 
         return $this;
     }

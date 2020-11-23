@@ -91,7 +91,7 @@ class Router implements RouterContract
             $this->routes[$method],
             function (Route $route) use ($uri) {
                 return preg_match(
-                    '~^(/?)' . $route->getUriPattern() . '(/?)*$~',
+                    '~^(?:/?)' . $route->getUriPattern() . '(?:/?)*$~',
                     $uri
                 );
             }
