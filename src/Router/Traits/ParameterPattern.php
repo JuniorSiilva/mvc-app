@@ -28,9 +28,9 @@ trait ParameterPattern
         return $this;
     }
 
-    public function getParameterPattern(string $parameter) :? string
+    public function getParameterPattern(string $parameter, string $default = '[^/]+') :? string
     {
-        return $this->parametersPattern[$parameter];
+        return $this->parametersPattern[$parameter] ?? $default;
     }
 
     public function getParametersPattern() : array

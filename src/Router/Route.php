@@ -37,16 +37,12 @@ class Route implements RouteContract
                 '~{{([^}?]*)}}~' => function ($matches) {
                     $parameter = $matches[1];
 
-                    return $this->getParameterPattern($parameter)
-                            ? '(' . $this->getParameterPattern($parameter) . ')'
-                                : '([^/]+)';
+                    return '(' . $this->getParameterPattern($parameter) . ')';
                 },
                 '~/?{{([^}]*)?}}~' => function ($matches) {
                     $parameter = explode('?', $matches[1])[0];
 
-                    return $this->getParameterPattern($parameter)
-                            ? '(/(' . $this->getParameterPattern($parameter) . '))?'
-                                : '(/([^/]+))?';
+                    return '(?:/(' . $this->getParameterPattern($parameter) . '))?';
                 },
             ],
             $this->uri
