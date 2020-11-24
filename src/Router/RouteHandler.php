@@ -33,7 +33,7 @@ class RouteHandler implements RouteHandlerContract
 
     public function execute(Route $route) : bool
     {
-        call_user_func($this->getHandler());
+        call_user_func_array($this->getHandler(), $route->getParameters());
 
         return true;
     }

@@ -14,5 +14,5 @@ interface RouteContract
 
     public function getUriPattern() : string;
 
-    public function run() : bool;
+    public function run(string $url) : bool;
 }

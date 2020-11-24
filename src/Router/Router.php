@@ -90,10 +90,7 @@ class Router implements RouterContract
         $routes = array_filter(
             $this->routes[$method],
             function (Route $route) use ($uri) {
-                return preg_match(
-                    '~^(?:/?)' . $route->getUriPattern() . '(?:/?)*$~',
-                    $uri
-                );
+                return preg_match($route->getUriPattern(), $uri);
             }
         );
 
@@ -126,6 +123,6 @@ class Router implements RouterContract
             throw new RouteNotFoundException;
         }
 
-        return $route->run();
+        return $route->run($this->getUrl());
     }
 }

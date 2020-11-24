@@ -20,6 +20,8 @@ class Route implements RouteContract
 
     private RouteHandlerContract $handler;
 
+    private array $parameters = [];
+
     public function __construct(string $method, string $uri, $handler)
     {
         $this->method = $method;
@@ -48,7 +50,7 @@ class Route implements RouteContract
             $this->uri
         );
 
-        return $uriPattern;
+        return '~^(?:/?)' . $uriPattern . '(?:/?)*$~';
     }
 
     public function setName(?string $name) : self
@@ -73,8 +75,55 @@ class Route implements RouteContract
         return $this->name;
     }
 
-    public function run() : bool
+    public function getParameters()
     {
-        return $this->handler->execute($this);
+        return $this->parameters;
+    }
+
+    public function getParameter(string $key, $default)
+    {
+        return $this->parameters[$key] ?? $default;
+    }
+
+    private function loadParametersValues(string $url)
+    {
+        preg_match($this->getUriPattern(), $url, $values);
+
+        array_splice($values, 0, 1);
+
+        return $values;
+    }
+
+    private function loadParametersKeys()
+    {
+        $newUri = str_replace('?', '', $this->getUri());
+
+        preg_match_all('~{{([^}?]*)}}~', $newUri, $keys, PREG_SET_ORDER);
+
+        $keys = array_map(function ($m) {
+            return $m[1];
+        }, $keys);
+
+        return $keys;
+    }
+
+    private function loadParameters(string $url)
+    {
+        $keys = $this->loadParametersKeys();
+
+        $values = $this->loadParametersValues($url);
+
+        foreach ($keys as $index => $k) {
+            $this->parameters[$k] = $values[$index] ?? null;
+        }
+    }
+
+    public function run(string $url) : bool
+    {
+        $this->loadParameters($url);
+
+        return $this->handler->execute(
+            $this
+        );
     }
 }
